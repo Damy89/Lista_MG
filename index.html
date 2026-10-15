@@ -70,9 +70,9 @@
                         <input type="text" id="quantity-input" placeholder="Qtà (es. 1l)" 
                             class="w-1/3 px-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
 
-                        <!-- Pulsante Foto Prodotto -->
+                        <!-- Pulsante Foto Prodotto (Senza attributo capture per consentire scelta Galleria/Fotocamera) -->
                         <label class="w-1/3 flex items-center justify-center gap-1 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl text-xs text-gray-600 cursor-pointer px-2 py-2 transition">
-                            <i class="fa-solid fa-camera text-emerald-600"></i>
+                            <i class="fa-solid fa-image text-emerald-600"></i>
                             <span id="photo-label" class="truncate">Foto</span>
                             <input type="file" id="item-photo" accept="image/*" class="hidden" onchange="anteprimaFoto(this)">
                         </label>
@@ -476,7 +476,6 @@
             if (!dateInput || isNaN(amountInput)) return;
 
             const coveredByVouchers = Math.max(0, amountInput - cashInput);
-            // Arrotondamento al numero intero (cifra tonda) di buoni usati
             const vouchersUsed = Math.round(coveredByVouchers / voucherValue);
 
             const newCost = {
