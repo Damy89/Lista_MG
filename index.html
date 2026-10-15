@@ -61,6 +61,7 @@
                             <option value="Dispensa e Pasta">🍝 Dispensa</option>
                             <option value="Surgelati">🧊 Surgelati</option>
                             <option value="Bevande">🧃 Bevande</option>
+                            <option value="Elettronica">⚡ Elettronica</option>
                             <option value="Igiene e Cura Personale">🧴 Igiene</option>
                             <option value="Casa e Pulizia">🧹 Casa</option>
                             <option value="Altro">🛒 Altro</option>
@@ -268,7 +269,7 @@
             <span class="text-[10px] font-medium">Costi & Buoni</span>
         </button>
         <button onclick="switchTab('carte')" id="nav-carte" class="flex flex-col items-center flex-1 py-1 text-gray-400 hover:text-gray-600 transition">
-            <i class="fa-solid fa-id-card text-base mb-0.5"></i>
+            <i class="fa-solid id-card fa-id-card text-base mb-0.5"></i>
             <span class="text-[10px] font-medium">Fedeltà</span>
         </button>
         <button onclick="switchTab('impostazioni')" id="nav-impostazioni" class="flex flex-col items-center flex-1 py-1 text-gray-400 hover:text-gray-600 transition">
@@ -306,7 +307,6 @@
             { text: "Carta igienica", category: "Casa e Pulizia" }
         ];
 
-        // Se non ci sono articoli in locale, inizializza con quelli di default
         if (!currentItems) {
             inizializzaListaDefault();
         }
@@ -352,7 +352,6 @@
             }
         }
 
-        // Gestione Anteprima Foto Articolo
         window.anteprimaFoto = function(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -373,7 +372,6 @@
             document.getElementById('photo-label').innerText = 'Foto';
         }
 
-        // Form Aggiungi Articolo
         document.getElementById('add-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const input = document.getElementById('item-input');
@@ -402,7 +400,6 @@
             input.focus();
         });
 
-        // Modale Importazione
         window.apriModaleImport = function() {
             document.getElementById('import-text').value = '';
             document.getElementById('import-file').value = '';
@@ -469,7 +466,7 @@
             alert(`Importati con successo ${righeTrovate.length} articoli!`);
         }
 
-        // Form Aggiungi Costo
+        // Form Aggiunta Costo (Arrotondamento Buoni Pasto a cifra tonda)
         document.getElementById('cost-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const dateInput = document.getElementById('cost-date').value;
@@ -479,14 +476,15 @@
             if (!dateInput || isNaN(amountInput)) return;
 
             const coveredByVouchers = Math.max(0, amountInput - cashInput);
-            const vouchersUsed = (coveredByVouchers / voucherValue).toFixed(2);
+            // Arrotondamento al numero intero (cifra tonda) di buoni usati
+            const vouchersUsed = Math.round(coveredByVouchers / voucherValue);
 
             const newCost = {
                 id: 'cost-' + Date.now(),
                 date: dateInput,
                 amount: amountInput,
                 cash: cashInput,
-                vouchers: parseFloat(vouchersUsed)
+                vouchers: vouchersUsed
             };
 
             currentCosts.unshift(newCost);
@@ -498,7 +496,6 @@
             document.getElementById('cost-date').valueAsDate = new Date();
         });
 
-        // Form Carta Fedeltà
         document.getElementById('card-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('card-name').value.trim();
@@ -515,7 +512,6 @@
             document.getElementById('card-number').value = '';
         });
 
-        // Scanner Fotocamera
         window.startCamera = function() {
             document.getElementById('reader-container').classList.remove('hidden');
             html5QrCode = new Html5Qrcode("reader");
@@ -654,10 +650,10 @@
                 item.bought ? 'bg-gray-50 border-gray-200 opacity-70' : 'bg-white border-gray-100 shadow-sm hover:border-emerald-200'
             }`;
 
-            const photoHtml = item.photo ? `<img src="${item.photo}" class="w-10 h-10 object-cover rounded-lg mr-2 shrink-0 border border-gray-200">` : '';
+            const photoHtml = item.photo ? `<img src="${item.photo}" class="w-12 h-12 object-cover rounded-lg mr-3 shrink-0 border border-gray-200 shadow-sm">` : '';
 
             div.innerHTML = `
-                <div class="flex items-center gap-3 flex-1 cursor-pointer overflow-hidden" onclick="toggleItem('${item.id}')">
+                <div class="flex items-center gap-2 flex-1 cursor-pointer overflow-hidden" onclick="toggleItem('${item.id}')">
                     <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
                         item.bought ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-300 bg-white'
                     }">
@@ -724,9 +720,9 @@
             });
 
             document.getElementById('monthly-total').innerText = `€ ${monthlyTotal.toFixed(2)}`;
-            document.getElementById('monthly-vouchers').innerText = `Buoni usati: ${monthlyVouchers.toFixed(1)}`;
+            document.getElementById('monthly-vouchers').innerText = `Buoni usati: ${monthlyVouchers}`;
             document.getElementById('yearly-total').innerText = `€ ${yearlyTotal.toFixed(2)}`;
-            document.getElementById('yearly-vouchers').innerText = `Buoni usati: ${yearlyVouchers.toFixed(1)}`;
+            document.getElementById('yearly-vouchers').innerText = `Buoni usati: ${yearlyVouchers}`;
         }
 
         function renderCards() {
@@ -797,7 +793,6 @@
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
-        // Primo rendering
         renderAll();
     </script>
 </body>
